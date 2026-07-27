@@ -1,0 +1,20 @@
+# Pastas das quais Git vai ignorar
+build/
+.vscode/
+
+# executaveis em geralg
+*.exe
+*.out
+*.app
+
+# arquivo de save do imgui
+imgui.ini
+
+# arquivos de relatorio
+*.log
+*.dump
+*.dmp
+
+# arquivos do sistema
+Thumbs.db
+.DS_Store
