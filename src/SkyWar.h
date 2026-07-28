@@ -5,9 +5,9 @@
 
 constexpr int ENTITIES_MAX = 4; // 5 of each type
 constexpr int PARTICLES_MAX = 512; // 5 of each type
-constexpr float VELOCITY_INCREMENT = 1.5f;
-constexpr float ANGLE_INCREMENT = 0.125f;
-constexpr float PARTICLE_INCREMENT = 0.2f;
+constexpr float VELOCITY_INCREMENT = 4.5f;
+constexpr float ANGLE_INCREMENT = 120.125f;
+constexpr float PARTICLE_INCREMENT = 1.01f;
 
 class SkyWar : public Program {
 private:
@@ -56,6 +56,7 @@ private:
         and then fire the gun of the enemie.
     */
 
+    Texture Background;
     std::vector<Dot> Particles;
     std::vector<Ship> Entities; // a object inside is managed by its index.
     std::pair<Texture, i32> PlayerShip; 
@@ -74,7 +75,7 @@ private:
             ship_target.second.push_back(current_index + i);
             j = current_index + i;
         }
-        return j++;;
+        return j++;
     }
 
     void RotateMatrix(const i32& index, std::vector<Ship>& ship_target, const f32& degrees) {
@@ -97,6 +98,20 @@ private:
             ship_target.mat = glm::translate(ship_target.mat, increment_vec);
     }
 
+    void ScaleMatrix(const i32& index, std::vector<Ship>& ship_target, const glm::vec3& scale) {
+        ship_target.at(index).mat = glm::scale(ship_target.at(index).mat, scale);
+    }
+
+    void ScaleMatrix(Ship& ship_target, const glm::vec3& scale) {
+            ship_target.mat = glm::scale(ship_target.mat, scale);
+    }
+
+    void ScaleMatrix(std::vector<Ship>& ship_target, const glm::vec3& scale) {
+        for (auto& member : ship_target) {
+            member.mat = glm::scale(member.mat, scale);
+        }    
+    }
+
     i32 GetUnactiveParticleID(std::vector<Dot> particle_list) {
         i32 i = 0;
         for (const auto& member : particle_list) {
@@ -104,6 +119,15 @@ private:
             i++;
         }
         return 0; // error, but is better get back to first position than return size
+    }
+
+    void Shoot(const Ship& origin, std::vector<Dot>& particle_list) {
+        const auto& id = GetUnactiveParticleID(particle_list);
+        //particle_list.at(id).dirVec = glm::vec3(origin.mat[3][0], origin.mat[3][1], 0.0f);
+        
+        particle_list.at(id).dirVec = glm::vec3(origin.mat[3][0], origin.mat[3][1], 0.0f) * GetWindowAspectRatio() * 2.125f;
+        // particle_list.at(id).dirVec += glm::vec3(origin.velInc * tan(origin.degInc), origin.velInc, 0.0f);
+        particle_list.at(id).active = true;
     }
 
     //////////////////////////////////////////////////////////////////////
